@@ -29,6 +29,21 @@ app.get(apiversion + '/books',  function (req, res)  {
   
 });
 
+//Get all student
+app.get(apiversion + '/student',  function (req, res)  {  
+
+  res.setHeader('Content-Type', 'application/json');
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  
+  db.query('SELECT * FROM student', function (error, results, fields) {
+      if (error) throw error;
+      return res.send({ error: false, message: 'student list', data: results });
+  });
+
+  
+});
+
 //Get book by id
 app.get(apiversion + '/book/:bookid',  function (req, res)  {  
 
@@ -49,17 +64,16 @@ app.get(apiversion + '/book/:bookid',  function (req, res)  {
 
 //Get student by id
 app.get(apiversion + '/student/:studentId',  function (req, res)  {  
-
+  
+  var studentId = req.params.studentId;
 
   res.setHeader('Content-Type', 'application/json');
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
-  var studentId = Number(req.params.studentId);
-  
   db.query('SELECT * FROM student where studentId=?', studentId.toString(),function (error, results, fields) {
       if (error) throw error;
-      return res.send({ error: false, message: 'student Id =' + studentId.toString(), data: results });
+      return res.send({ error: false, message: 'student Id = ' + studentId.toString(), data: results });
   });
 
 
@@ -84,7 +98,28 @@ app.delete(apiversion + '/book/:bookid',  function (req, res)  {
    
 
 });
-//test
+
+
+//Delete student by Id
+app.delete(apiversion + '/student/:studentId',  function (req, res)  {  
+
+  var studentId = req.params.studentId;
+
+  res.setHeader('Content-Type', 'application/json');
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+  
+  db.query(`DELETE from student WHERE studentId =${studentId};`,function (error, results, fields) {
+      if (error) throw error;
+      return res.send({ error: false, message: ' Modified student' });
+  });
+
+   
+
+});
+
+
 
 //Add new book
 app.post(apiversion + '/book',  function (req, res)  {  
@@ -123,8 +158,8 @@ app.post(apiversion + '/book',  function (req, res)  {
 //Add new student
 app.post(apiversion + '/student',  function (req, res) {
 
-  var studentId = req.body.studentId
-  var studentName = req.body.studentName
+  var studentId = req.body.studentId;
+  var studentName = req.body.studentName;
 
   res.setHeader('Content-Type', 'application/json');
   res.header("Access-Control-Allow-Origin", "*");
@@ -183,6 +218,29 @@ app.put(apiversion + '/book/:bookid',  function (req, res)  {
 
 });
 
+//put student
+app.put(apiversion + '/student/:studentId',  function (req, res)  {  
+
+  var studentId = req.body.studentId;
+  var studentName = req.body.studentName;
+
+
+  res.setHeader('Content-Type', 'application/json');
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+  
+  db.query(`UPDATE student 
+            Set
+               studentId = '${studentId}',
+               studentName = '${studentName}'
+  
+            where studentId='${studentId}';`,function (error, results, fields) {
+    if (error) throw error;
+    return res.send({ error: false, message: ' Modified student' });
+   });
+
+});
 
 
 app.listen(port, function () {
