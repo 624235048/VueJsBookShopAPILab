@@ -30,13 +30,13 @@ app.get(apiversion + '/books',  function (req, res)  {
 });
 
 //Get all student
-app.get(apiversion + '/student',  function (req, res)  {  
+app.get(apiversion + '/students',  function (req, res)  {  
 
   res.setHeader('Content-Type', 'application/json');
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   
-  db.query('SELECT * FROM student', function (error, results, fields) {
+  db.query('SELECT * FROM students', function (error, results, fields) {
       if (error) throw error;
       return res.send({ error: false, message: 'student list', data: results });
   });
@@ -63,17 +63,17 @@ app.get(apiversion + '/book/:bookid',  function (req, res)  {
 });
 
 //Get student by id
-app.get(apiversion + '/student/:studentId',  function (req, res)  {  
+app.get(apiversion + '/student/:number',  function (req, res)  {  
   
-  var studentId = req.params.studentId;
+  var number = Number(req.params.number);
 
   res.setHeader('Content-Type', 'application/json');
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
-  db.query('SELECT * FROM student where studentId=?', studentId.toString(),function (error, results, fields) {
+  db.query('SELECT * FROM students where number=?', number.toString(),function (error, results, fields) {
       if (error) throw error;
-      return res.send({ error: false, message: 'student Id = ' + studentId.toString(), data: results });
+      return res.send({ error: false, message: 'number = ' + number.toString(), data: results });
   });
 
 
@@ -101,16 +101,16 @@ app.delete(apiversion + '/book/:bookid',  function (req, res)  {
 
 
 //Delete student by Id
-app.delete(apiversion + '/student/:studentId',  function (req, res)  {  
+app.delete(apiversion + '/student/:number',  function (req, res)  {  
 
-  var studentId = req.params.studentId;
+  var number = req.params.number;
 
   res.setHeader('Content-Type', 'application/json');
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
   
-  db.query(`DELETE from student WHERE studentId =${studentId};`,function (error, results, fields) {
+  db.query(`DELETE from students WHERE number =${number};`,function (error, results, fields) {
       if (error) throw error;
       return res.send({ error: false, message: ' Modified student' });
   });
@@ -165,7 +165,7 @@ app.post(apiversion + '/student',  function (req, res) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
-  db.query(`INSERT INTO student (studentId,studentName) VALUES ('${studentId}','${studentName}');`,function (error, results, fields) {
+  db.query(`INSERT INTO students (studentId,studentName) VALUES ('${studentId}','${studentName}');`,function (error, results, fields) {
     if (error) throw error;
     return res.send({ error: false, message: 'Insert new student' });
   });
@@ -219,10 +219,11 @@ app.put(apiversion + '/book/:bookid',  function (req, res)  {
 });
 
 //put student
-app.put(apiversion + '/student/:studentId',  function (req, res)  {  
+app.put(apiversion + '/student/:number',  function (req, res)  {  
 
   var studentId = req.body.studentId;
   var studentName = req.body.studentName;
+  var number = req.params.number;
 
 
   res.setHeader('Content-Type', 'application/json');
@@ -230,12 +231,12 @@ app.put(apiversion + '/student/:studentId',  function (req, res)  {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
   
-  db.query(`UPDATE student 
+  db.query(`UPDATE students 
             Set
                studentId = '${studentId}',
                studentName = '${studentName}'
   
-            where studentId='${studentId}';`,function (error, results, fields) {
+            where number=${number};`,function (error, results, fields) {
     if (error) throw error;
     return res.send({ error: false, message: ' Modified student' });
    });
